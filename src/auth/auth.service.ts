@@ -30,6 +30,7 @@ export class AuthService {
         .send({ cmd: 'users-get-by-email' }, email)
         .toPromise();
       await this.verifyPassword(plainTextPassword, user.password);
+      user.password = undefined;
       return user;
     } catch (error) {
       throw new RpcException({
