@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 export class AuthService {
   constructor(
     @Inject('USERS_SERVICE') private usersService: ClientProxy,
-    // @Inject('EMAILS_SERVICE') private emailsService: ClientProxy,
+    @Inject('EMAILS_SERVICE') private emailsService: ClientProxy,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -27,9 +27,13 @@ export class AuthService {
           },
         )
         .toPromise();
-      const token = this.generateToken(user.id);
-      // await this.emailsService({ 'emails-send-reset-password' }, token);
-      console.log(token);
+      const token = await this.generateToken(user.id);
+      await this.emailsService
+        .send(
+          { cmd: 'emails-send-confirm-email' },
+          { email: user.email, token },
+        )
+        .toPromise();
       return user;
     } catch (error) {
       throw new RpcException(error);
@@ -73,10 +77,11 @@ export class AuthService {
       const user = await this.usersService
         .send({ cmd: 'users-get-by-email' }, email)
         .toPromise();
-      const token = this.generateToken(user.id);
-      // send email with token
-      // await this.emailsService({ 'emails-send-reset-password' }, token);
-      console.log(token);
+      const token = await this.generateToken(user.id);
+      await this.emailsService.send(
+        { cmd: 'emails-send-reset-password' },
+        token,
+      );
       return await this.usersService.send(
         { cmd: 'users-set-resetting-password' },
         email,
@@ -106,23 +111,19 @@ export class AuthService {
       .send({ cmd: 'users-get-by-email' }, email)
       .toPromise();
     if (!user.isEmailConfirmed) {
-      const token = this.generateToken(user.id);
-      // return this.emailService.send(
-      //   { cmd: 'emails-send-confirm-email' },
-      //   { email, token },
-      // );
-      console.log(token);
-      return true;
+      const token = await this.generateToken(user.id);
+      return this.emailsService.send(
+        { cmd: 'emails-send-confirm-email' },
+        { email, token },
+      );
     }
   }
 
   private generateToken(userId: number) {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-      expiresIn: `${this.configService.get(
-        'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-      )}s`,
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}s`,
     });
     return token;
   }

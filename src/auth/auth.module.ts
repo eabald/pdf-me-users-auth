@@ -27,13 +27,12 @@ import { JwtModule } from '@nestjs/jwt';
         const user = configService.get('RABBITMQ_USER');
         const password = configService.get('RABBITMQ_PASSWORD');
         const host = configService.get('RABBITMQ_HOST');
-        const queueName = configService.get('RABBITMQ_QUEUE_NAME');
 
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
             urls: [`amqp://${user}:${password}@${host}`],
-            queue: queueName,
+            queue: 'usersQueue',
             queueOptions: {
               durable: true,
             },
@@ -42,27 +41,27 @@ import { JwtModule } from '@nestjs/jwt';
       },
       inject: [ConfigService],
     },
-    // {
-    //   provide: 'EMAILS_SERVICE',
-    //   useFactory: (configService: ConfigService) => {
-    //     const user = configService.get('RABBITMQ_USER');
-    //     const password = configService.get('RABBITMQ_PASSWORD');
-    //     const host = configService.get('RABBITMQ_HOST');
-    //     const queueName = configService.get('RABBITMQ_QUEUE_NAME');
+    {
+      provide: 'EMAILS_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const user = configService.get('RABBITMQ_USER');
+        const password = configService.get('RABBITMQ_PASSWORD');
+        const host = configService.get('RABBITMQ_HOST');
+        // const queueName = configService.get('RABBITMQ_QUEUE_NAME');
 
-    //     return ClientProxyFactory.create({
-    //       transport: Transport.RMQ,
-    //       options: {
-    //         urls: [`amqp://${user}:${password}@${host}`],
-    //         queue: queueName,
-    //         queueOptions: {
-    //           durable: true,
-    //         },
-    //       },
-    //     });
-    //   },
-    //   inject: [ConfigService],
-    // },
+        return ClientProxyFactory.create({
+          transport: Transport.RMQ,
+          options: {
+            urls: [`amqp://${user}:${password}@${host}`],
+            queue: 'emailsQueue',
+            queueOptions: {
+              durable: true,
+            },
+          },
+        });
+      },
+      inject: [ConfigService],
+    },
   ],
   controllers: [AuthController],
 })
