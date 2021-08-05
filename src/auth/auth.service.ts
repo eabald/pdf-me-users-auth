@@ -1,9 +1,8 @@
 import { Injectable, Inject, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { RegisterDto } from './dto/register.dto';
 import { JwtService } from '@nestjs/jwt';
-import { TokenPayload } from './interfaces/tokenPayload.interface';
+import { TokenPayload, RegisterDto } from '@pdf-me/shared';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()

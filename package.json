@@ -1,5 +1,5 @@
 {
-  "name": "auth",
+  "name": "@pdf-me/auth",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -28,6 +28,7 @@
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/microservices": "^8.0.4",
     "@nestjs/platform-express": "^8.0.0",
+    "@pdf-me/shared": "^1.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/connect-redis": "0.0.17",
     "@types/passport-jwt": "^3.0.6",

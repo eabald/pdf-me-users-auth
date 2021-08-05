@@ -1,11 +1,13 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { LoginDto } from './dto/login.dto';
+import {
+  LoginDto,
+  RegisterDto,
+  ConfirmEmailDto,
+  ForgetPasswordDto,
+  ResetPasswordDto,
+} from '@pdf-me/shared';
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { ConfirmEmailDto } from './dto/confirmEmail.dto';
-import { ForgetPasswordDto } from './dto/forgetPassword.dto';
-import { ResetPasswordDto } from './dto/resetPassword.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authenticationService: AuthService) {}
