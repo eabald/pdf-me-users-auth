@@ -126,4 +126,14 @@ export class AuthService {
     });
     return token;
   }
+
+  async validateApiKey(key: string) {
+    console.log(key);
+    return true;
+  }
+
+  async generateApiKey(userId: string) {
+    console.log(userId);
+    return 'superSecretApiKey';
+  }
 }

@@ -44,4 +44,14 @@ export class AuthController {
   async resendEmailConfirm(@Payload() { email }: ConfirmEmailDto) {
     return this.authenticationService.resendEmailConfirm(email);
   }
+
+  @MessagePattern({ cmd: 'auth-validate-api-key' })
+  async validateApiKey(@Payload() key: string) {
+    return this.authenticationService.validateApiKey(key);
+  }
+
+  @MessagePattern({ cmd: 'auth-generate-api-key' })
+  async generateApiKey(@Payload() userId: string) {
+    return this.authenticationService.generateApiKey(userId);
+  }
 }
