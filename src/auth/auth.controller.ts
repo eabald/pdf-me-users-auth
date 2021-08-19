@@ -51,7 +51,7 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: 'auth-generate-api-key' })
-  async generateApiKey(@Payload() userId: string) {
+  async generateApiKey(@Payload() userId: number) {
     return this.authenticationService.generateApiKey(userId);
   }
 }

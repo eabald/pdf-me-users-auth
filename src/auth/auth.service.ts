@@ -2,8 +2,9 @@ import { Injectable, Inject, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
-import { TokenPayload, RegisterDto } from '@pdf-me/shared';
+import { TokenPayload, RegisterDto, ApiKeyPayload } from '@pdf-me/shared';
 import { ConfigService } from '@nestjs/config';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -128,12 +129,47 @@ export class AuthService {
   }
 
   async validateApiKey(key: string) {
-    console.log(key);
-    return true;
+    try {
+      const keyData: ApiKeyPayload = this.jwtService.verify(
+        key,
+        this.configService.get('JWT_SECRET'),
+      );
+      const user = await this.usersService
+        .send({ cmd: 'users-get-by-id' }, keyData.userId)
+        .toPromise();
+      if (!user || user.key !== keyData.key) {
+        throw new RpcException({
+          message: 'Unauthorized',
+          statusCode: HttpStatus.UNAUTHORIZED,
+        });
+      }
+      return true;
+    } catch (error) {
+      throw new RpcException({
+        message: 'Unauthorized',
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
+    }
   }
 
-  async generateApiKey(userId: string) {
-    console.log(userId);
-    return 'superSecretApiKey';
+  generateKey() {
+    const totalBytes = 512;
+    let apiKey;
+    apiKey = randomBytes(totalBytes).toString('hex');
+    const endIndex = apiKey.length - (apiKey.length - 512);
+    apiKey = apiKey.slice(0, endIndex);
+    return apiKey;
+  }
+
+  async generateApiKey(userId: number) {
+    const key = this.generateKey();
+    await this.usersService
+      .send({ cmd: 'users-save-api-key' }, { userId, key })
+      .toPromise();
+    const payload: ApiKeyPayload = { userId, key };
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+    return token;
   }
 }
