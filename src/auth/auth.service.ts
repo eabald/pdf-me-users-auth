@@ -138,17 +138,11 @@ export class AuthService {
         .send({ cmd: 'users-get-by-id' }, keyData.userId)
         .toPromise();
       if (!user || user.key !== keyData.key) {
-        throw new RpcException({
-          message: 'Unauthorized',
-          statusCode: HttpStatus.UNAUTHORIZED,
-        });
+        return false;
       }
-      return true;
+      return user;
     } catch (error) {
-      throw new RpcException({
-        message: 'Unauthorized',
-        statusCode: HttpStatus.UNAUTHORIZED,
-      });
+      return false;
     }
   }
 
