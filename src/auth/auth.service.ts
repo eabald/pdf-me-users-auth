@@ -163,6 +163,7 @@ export class AuthService {
     const payload: ApiKeyPayload = { userId, key };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
+      expiresIn: `${100 * 365 * 24 * 3600}s`,
     });
     return token;
   }
