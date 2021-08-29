@@ -6,7 +6,7 @@ This service main concern is to manage users authentication and authorization.
 
 ## Development
 
-To start api-gateway service in development mode first of all install npm dependencies:
+To start auth service in development mode first of all install npm dependencies:
 
 ```bash
 npm i
