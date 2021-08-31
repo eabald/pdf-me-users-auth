@@ -62,6 +62,26 @@ import { JwtModule } from '@nestjs/jwt';
       },
       inject: [ConfigService],
     },
+    {
+      provide: 'PAYMENTS_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const user = configService.get('RABBITMQ_USER');
+        const password = configService.get('RABBITMQ_PASSWORD');
+        const host = configService.get('RABBITMQ_HOST');
+
+        return ClientProxyFactory.create({
+          transport: Transport.RMQ,
+          options: {
+            urls: [`amqp://${user}:${password}@${host}`],
+            queue: 'paymentsQueue',
+            queueOptions: {
+              durable: true,
+            },
+          },
+        });
+      },
+      inject: [ConfigService],
+    },
   ],
   controllers: [AuthController],
 })

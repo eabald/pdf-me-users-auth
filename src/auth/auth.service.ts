@@ -11,6 +11,7 @@ export class AuthService {
   constructor(
     @Inject('USERS_SERVICE') private usersService: ClientProxy,
     @Inject('EMAILS_SERVICE') private emailsService: ClientProxy,
+    @Inject('PAYMENTS_SERVICE') private paymentsService: ClientProxy,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -18,12 +19,19 @@ export class AuthService {
   public async register(registrationData: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
     try {
+      const stripeCustomer = await this.paymentsService
+        .send(
+          { cmd: 'payments-create-customer' },
+          { name: registrationData.name, email: registrationData.email },
+        )
+        .toPromise();
       const user = await this.usersService
         .send(
           { cmd: 'users-create' },
           {
             ...registrationData,
             password: hashedPassword,
+            stripeCustomerId: stripeCustomer.id,
           },
         )
         .toPromise();
