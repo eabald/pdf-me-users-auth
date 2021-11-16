@@ -1,5 +1,5 @@
 {
-  "name": "@pdf-me/auth",
+  "name": "@eabald/pdf-me-auth",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@eabald/pdf-me-shared": "^0.0.1-alfa",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.0.1",
@@ -28,7 +29,6 @@
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/microservices": "^8.0.4",
     "@nestjs/platform-express": "^8.0.0",
-    "@pdf-me/shared": "^1.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/connect-redis": "0.0.17",
     "@types/passport-jwt": "^3.0.6",

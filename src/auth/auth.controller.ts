@@ -6,7 +6,7 @@ import {
   ConfirmEmailDto,
   ForgetPasswordDto,
   ResetPasswordDto,
-} from '@pdf-me/shared';
+} from '@eabald/pdf-me-shared';
 import { AuthService } from './auth.service';
 @Controller('auth')
 export class AuthController {

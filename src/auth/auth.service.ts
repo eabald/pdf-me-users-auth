@@ -2,7 +2,11 @@ import { Injectable, Inject, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
-import { TokenPayload, RegisterDto, ApiKeyPayload } from '@pdf-me/shared';
+import {
+  TokenPayload,
+  RegisterDto,
+  ApiKeyPayload,
+} from '@eabald/pdf-me-shared';
 import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
 
